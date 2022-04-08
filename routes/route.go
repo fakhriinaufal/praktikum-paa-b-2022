@@ -2,10 +2,9 @@ package routes
 
 import (
 	"net/http"
+	todo_controller "praktikum-paa-b-2022/controllers/todo"
 
 	"github.com/labstack/echo/v4"
-
-	todo_controller "praktikum-paa-b-2022/controllers/todo"
 )
 
 func New() *echo.Echo {
@@ -17,12 +16,14 @@ func New() *echo.Echo {
 		})
 	})
 
-	// e.GET("/todos", todo_controller.GetAll)
-	// e.POST("/todos", todo_controller.Create)
+	e.GET("/todos", todo_controller.GetAll)
+	e.POST("/todos", todo_controller.Create)
+	e.PATCH("/todos/:id", todo_controller.Update)
+	e.DELETE("/todos/:id", todo_controller.Delete)
 
-	todoRoute := e.Group("/todos")
-	todoRoute.GET("/", todo_controller.GetAll)
-	todoRoute.POST("/", todo_controller.Create)
+	// todoRoute := e.Group("/todos")
+	// todoRoute.GET("/", todo_controller.GetAll)
+	// todoRoute.POST("/", todo_controller.Create)
 
 	return e
 }
