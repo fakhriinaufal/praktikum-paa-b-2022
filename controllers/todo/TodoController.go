@@ -2,18 +2,22 @@ package todo
 
 import (
 	"net/http"
+	"praktikum-paa-b-2022/controllers"
+	"praktikum-paa-b-2022/middlewares"
 	"praktikum-paa-b-2022/models/todo"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/spf13/viper"
 )
 
 func GetAll(c echo.Context) error {
 	todos := todo.GetAllTodo()
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"todos": todos,
-	})
+	// return c.JSON(http.StatusOK, map[string]interface{}{
+	// 	"todos": todos,
+	// })
+	return controllers.NewSuccessResponse(c, todos)
 }
 
 func Create(c echo.Context) error {
@@ -79,4 +83,16 @@ func Delete(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"message": "todo deleted",
 	})
+}
+
+func GenerateTokenHTTP(c echo.Context) error {
+	confJWT := middlewares.ConfigJwt{
+		Secret:    viper.GetString("jwt.secret"),
+		ExpiresAt: viper.GetInt64("jwt.expired"),
+	}
+	tokenn, err := confJWT.GenerateToken("ini title")
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, tokenn)
 }
